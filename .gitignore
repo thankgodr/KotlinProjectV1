@@ -1,21 +1,42 @@
-*.iml
-.kotlin
-.gradle
-**/build/
-xcuserdata
-!src/**/build/
-local.properties
-.idea
+# ===== Shared =====
 .DS_Store
-captures
-.externalNativeBuild
-.cxx
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcodeproj/xcshareddata/
-!*.xcodeproj/project.xcworkspace/
-!*.xcworkspace/contents.xcworkspacedata
-**/xcshareddata/WorkspaceSettings.xcsettings
+*.swp
+*.swo
+*~
+
+# ===== Gradle =====
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
+
+# ===== Kotlin =====
+.kotlin/
+
+# ===== IDE (Android Studio / IntelliJ) =====
+.idea/
+*.iml
+.vscode/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ===== Android =====
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# ===== iOS =====
+*.xcuserdata
+*.xcworkspace
+Pods/
+DerivedData/
+
+# ===== Python / Misc =====
+venv/
+__pycache__/
+*.pyc
+
+# ===== Node (if any) =====
 node_modules/
-.idea/*
-venv/*
