@@ -36,7 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -73,6 +73,7 @@ import kotlinproject.composeapp.generated.resources.success_send_another
 import kotlinproject.composeapp.generated.resources.success_transaction_id_prefix
 import kotlinproject.composeapp.generated.resources.success_view_history
 import me.thankgodr.fintechchallegeapp.domain.model.Currency
+import me.thankgodr.fintechchallegeapp.presentation.utils.TestTags
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -103,13 +104,17 @@ fun SendPaymentScreen(
     }
 
     Scaffold(
+        modifier = Modifier.testTag(TestTags.SendPayment.SCREEN),
         topBar = {
             TopAppBar(
                 title = {
                     Text(stringResource(Res.string.send_payment_title), fontWeight = FontWeight.SemiBold)
                 },
                 actions = {
-                    TextButton(onClick = onNavigateToHistory) {
+                    TextButton(
+                        onClick = onNavigateToHistory,
+                        modifier = Modifier.testTag(TestTags.SendPayment.HISTORY_BUTTON)
+                    ) {
                         Text(stringResource(Res.string.send_payment_history))
                         Spacer(Modifier.width(4.dp))
                         Icon(
@@ -136,7 +141,9 @@ fun SendPaymentScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(TestTags.SendPayment.AMOUNT_DISPLAY),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
@@ -177,7 +184,7 @@ fun SendPaymentScreen(
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.SendPayment.SENDER_NAME_INPUT),
                 shape = RoundedCornerShape(12.dp)
             )
 
@@ -196,7 +203,7 @@ fun SendPaymentScreen(
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.SendPayment.EMAIL_INPUT),
                 shape = RoundedCornerShape(12.dp)
             )
 
@@ -229,11 +236,11 @@ fun SendPaymentScreen(
                         viewModel.onIntent(SendPaymentIntent.SubmitPayment)
                     }
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.SendPayment.AMOUNT_INPUT),
                 shape = RoundedCornerShape(12.dp)
             )
 
-            Box {
+            Box(modifier = Modifier.testTag(TestTags.SendPayment.CURRENCY_DROPDOWN)) {
                 OutlinedTextField(
                     value = "${state.selectedCurrency.flagEmoji} ${state.selectedCurrency.currencyCode}",
                     onValueChange = {},
@@ -251,7 +258,8 @@ fun SendPaymentScreen(
                 )
                 DropdownMenu(
                     expanded = currencyExpanded,
-                    onDismissRequest = { currencyExpanded = false }
+                    onDismissRequest = { currencyExpanded = false },
+                    modifier = Modifier.testTag(TestTags.SendPayment.CURRENCY_MENU)
                 ) {
                     Currency.supportedCurrencies.forEach { currency ->
                         DropdownMenuItem(
@@ -261,7 +269,8 @@ fun SendPaymentScreen(
                             onClick = {
                                 viewModel.onIntent(SendPaymentIntent.SelectCurrency(currency))
                                 currencyExpanded = false
-                            }
+                            },
+                            modifier = Modifier.testTag(TestTags.SendPayment.currencyOption(currency.currencyCode))
                         )
                     }
                 }
@@ -270,14 +279,16 @@ fun SendPaymentScreen(
             if (state.generalError != null) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(TestTags.SendPayment.ERROR_CARD),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = state.generalError!!,
+                        text = state.generalError.orEmpty(),
                         color = MaterialTheme.colorScheme.onErrorContainer,
                         modifier = Modifier.padding(16.dp),
                         style = MaterialTheme.typography.bodyMedium
@@ -291,7 +302,8 @@ fun SendPaymentScreen(
                 onClick = { viewModel.onIntent(SendPaymentIntent.SubmitPayment) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(56.dp)
+                    .testTag(TestTags.SendPayment.SUBMIT_BUTTON),
                 enabled = state.isFormValid && !state.isLoading,
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -300,7 +312,7 @@ fun SendPaymentScreen(
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(24.dp).testTag(TestTags.SendPayment.LOADING_INDICATOR),
                         color = MaterialTheme.colorScheme.onPrimary,
                         strokeWidth = 2.dp
                     )
@@ -329,7 +341,8 @@ private fun SuccessOverlay(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.surface)
+            .testTag(TestTags.Success.OVERLAY),
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
@@ -344,38 +357,47 @@ private fun SuccessOverlay(
                     FontAwesome.Regular.CircleCheck,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(80.dp).testTag(TestTags.Success.ICON)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     stringResource(Res.string.success_payment_sent),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.testTag(TestTags.Success.TITLE)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     "${currency.currencySymbol}${amount.toTwoDecimalString()} ${currency.currencyCode}",
                     fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag(TestTags.Success.AMOUNT)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     "${stringResource(Res.string.success_transaction_id_prefix)} ${transactionId.take(8)}...",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.testTag(TestTags.Success.TRANSACTION_ID)
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = onViewHistory,
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .testTag(TestTags.Success.VIEW_HISTORY_BUTTON),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(stringResource(Res.string.success_view_history))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                TextButton(onClick = onDismiss) {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.testTag(TestTags.Success.SEND_ANOTHER_BUTTON)
+                ) {
                     Text(stringResource(Res.string.success_send_another))
                 }
             }

@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import kotlinproject.composeapp.generated.resources.transaction_history_from_pre
 import kotlinproject.composeapp.generated.resources.transaction_history_title
 import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.model.TransactionStatus
+import me.thankgodr.fintechchallegeapp.presentation.utils.TestTags
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -58,13 +60,17 @@ fun TransactionHistoryScreen(
     val state by viewModel.state.collectAsState()
 
     Scaffold(
+        modifier = Modifier.testTag(TestTags.TransactionHistory.SCREEN),
         topBar = {
             TopAppBar(
                 title = {
                     Text(stringResource(Res.string.transaction_history_title), fontWeight = FontWeight.SemiBold)
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.testTag(TestTags.TransactionHistory.BACK_BUTTON)
+                    ) {
                         Icon(
                             FontAwesome.Solid.ArrowLeft,
                             contentDescription = stringResource(Res.string.transaction_history_back),
@@ -84,7 +90,9 @@ fun TransactionHistoryScreen(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.testTag(TestTags.TransactionHistory.LOADING_INDICATOR)
+                    )
                 }
             }
 
@@ -99,7 +107,8 @@ fun TransactionHistoryScreen(
                         Text(
                             state.error.orEmpty(),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.testTag(TestTags.TransactionHistory.ERROR_TEXT)
                         )
                     }
                 }
@@ -107,7 +116,10 @@ fun TransactionHistoryScreen(
 
             state.transactions.isEmpty() -> {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .testTag(TestTags.TransactionHistory.EMPTY_STATE),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -133,12 +145,13 @@ fun TransactionHistoryScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.dp)
+                        .testTag(TestTags.TransactionHistory.LIST),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     item { Spacer(modifier = Modifier.height(4.dp)) }
                     items(state.transactions, key = { it.id }) { transaction ->
-                        TransactionItem(transaction){
+                        TransactionItem(transaction) {
                             //Navigate to transaction detail
                         }
                     }
@@ -154,10 +167,10 @@ private fun TransactionItem(
     transaction: Transaction,
     onTransactionClick: (Transaction) -> Unit
 ) {
-
-
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(TestTags.TransactionHistory.transactionItem(transaction.id)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -204,7 +217,8 @@ private fun TransactionItem(
                     text = "${transaction.currency.currencySymbol}${transaction.amount.toTwoDecimalString()}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.testTag(TestTags.TransactionHistory.transactionAmount(transaction.id))
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 val statusColor = when (transaction.status) {
@@ -216,7 +230,8 @@ private fun TransactionItem(
                     text = transaction.status.name.lowercase().replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.labelSmall,
                     color = statusColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag(TestTags.TransactionHistory.transactionStatus(transaction.id))
                 )
             }
         }
