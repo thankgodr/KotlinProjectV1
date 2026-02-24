@@ -7,8 +7,7 @@ This project was built using **Compose Multiplatform** for the entirely shared U
 ---
 
 ## � App Preview
-https://github.com/user-attachments/assets/f80d55c4-a73e-49bc-a8b9-2ce325a65294
-
+https://github.com/user-attachments/assets/f5d70931-43a2-4ff1-8cff-a84990e33753
 ---
 
 ## �🌍 Cross-Platform Power of Kotlin Multiplatform (KMP)
