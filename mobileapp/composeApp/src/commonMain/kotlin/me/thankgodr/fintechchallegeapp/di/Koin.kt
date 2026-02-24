@@ -5,12 +5,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
+import me.thankgodr.fintechchallegeapp.data.remote.FirestoreDataSource
 import me.thankgodr.fintechchallegeapp.data.remote.HttpClientFactory
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.module
 import org.koin.ksp.generated.module
 
 
@@ -26,10 +28,14 @@ class HttpClientProvider {
 @ComponentScan("me.thankgodr.fintechchallegeapp")
 class SharedModule
 
+// Manual module for expect/actual classes not supported by KSP annotations
+val platformModule = module {
+    single { FirestoreDataSource() }
+}
 
 fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
-        modules(SharedModule().module)
+        modules(SharedModule().module, platformModule)
     }
 }

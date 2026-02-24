@@ -2,14 +2,13 @@ package me.thankgodr.fintechchallegeapp.data.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import me.thankgodr.fintechchallegeapp.data.models.TransactionDto
-import org.koin.core.annotation.Single
 
-@Single
 actual class FirestoreDataSource actual constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val transactionsCollection = db.collection("transactions")
@@ -29,6 +28,7 @@ actual class FirestoreDataSource actual constructor() {
 
     actual fun observeTransactions(): Flow<List<TransactionDto>> = callbackFlow {
         val listener: ListenerRegistration = transactionsCollection
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)

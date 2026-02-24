@@ -13,10 +13,6 @@ sealed class SendPaymentIntent {
     data object ResetForm : SendPaymentIntent()
 }
 
-sealed class SendPaymentEffect {
-    data class NavigateToDetail(val transaction: Transaction) : SendPaymentEffect()
-}
-
 data class SendPaymentState(
     val recipientEmail: String = "",
     val amount: String = "",

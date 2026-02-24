@@ -138,7 +138,9 @@ fun TransactionHistoryScreen(
                 ) {
                     item { Spacer(modifier = Modifier.height(4.dp)) }
                     items(state.transactions, key = { it.id }) { transaction ->
-                        TransactionItem(transaction)
+                        TransactionItem(transaction){
+                            //Navigate to transaction detail
+                        }
                     }
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                 }
@@ -148,13 +150,19 @@ fun TransactionHistoryScreen(
 }
 
 @Composable
-private fun TransactionItem(transaction: Transaction) {
+private fun TransactionItem(
+    transaction: Transaction,
+    onTransactionClick: (Transaction) -> Unit
+) {
+
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
         ),
+        onClick = { onTransactionClick(transaction) },
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
