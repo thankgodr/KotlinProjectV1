@@ -7,9 +7,6 @@ This project was built using **Compose Multiplatform** for the entirely shared U
 ---
 
 ## � App Preview
-<div align="center">
-  <video src="demo.mp4" width="250" controls></video>
-</div>
 
 ---
 
