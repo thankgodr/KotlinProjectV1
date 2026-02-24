@@ -6,7 +6,14 @@ This project was built using **Compose Multiplatform** for the entirely shared U
 
 ---
 
-## 🌍 Cross-Platform Power of Kotlin Multiplatform (KMP)
+## � App Preview
+<div align="center">
+  <video src="demo.mp4" width="250" controls></video>
+</div>
+
+---
+
+## �🌍 Cross-Platform Power of Kotlin Multiplatform (KMP)
 
 This application leverages **Kotlin Multiplatform (KMP)** to achieve maximum code reuse without sacrificing native performance or access to platform-specific APIs. By sharing the business logic, data models, networking code, and even the UI (via **Compose Multiplatform**), we gain:
 
