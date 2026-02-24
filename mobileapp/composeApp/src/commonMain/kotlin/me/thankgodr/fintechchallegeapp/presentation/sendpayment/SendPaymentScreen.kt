@@ -185,7 +185,7 @@ fun SendPaymentScreen(
                 value = state.recipientEmail,
                 onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateRecipientEmail(it)) },
                 label = { Text(stringResource(Res.string.send_payment_label_recipient_email)) },
-                leadingIcon = { Icon(FontAwesome.Solid.Envelope, contentDescription = null) },
+                leadingIcon = { Icon(FontAwesome.Solid.Envelope, contentDescription = null, modifier = Modifier.size(16.dp)) },
                 isError = state.emailError != null,
                 supportingText = state.emailError?.let { { Text(it) } },
                 singleLine = true,

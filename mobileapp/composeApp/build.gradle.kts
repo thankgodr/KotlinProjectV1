@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -105,10 +104,20 @@ dependencies {
 
 ksp {
     arg("KOIN_CONFIG_CHECK", "true")
+    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
 }
 
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+}
+
+// Ensure KSP metadata generates code before all other compile/ksp tasks
+project.tasks.configureEach {
+    if (name != "kspCommonMainKotlinMetadata" &&
+        (name.startsWith("ksp") || name.startsWith("compile"))
+    ) {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
 
 android {

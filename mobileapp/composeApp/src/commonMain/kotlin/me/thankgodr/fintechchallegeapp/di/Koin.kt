@@ -10,7 +10,8 @@ import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import org.koin.core.context.startKoin
-import org.koin.dsl.koinApplication
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.ksp.generated.module
 
 
 @Single
@@ -23,12 +24,12 @@ class HttpClientProvider {
 
 @Module
 @ComponentScan("me.thankgodr.fintechchallegeapp")
-class AppModule
+class SharedModule
 
 
-
-fun initKoin() {
-    startKoin{
-        modules(AppModule().module)
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin {
+        config?.invoke(this)
+        modules(SharedModule().module)
     }
 }
