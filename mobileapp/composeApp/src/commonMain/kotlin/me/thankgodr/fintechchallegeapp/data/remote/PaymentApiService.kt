@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.delay
 import me.thankgodr.fintechchallegeapp.data.models.ApiResponseDto
 import me.thankgodr.fintechchallegeapp.data.models.PaymentRequestDto
 import me.thankgodr.fintechchallegeapp.data.models.TransactionDto
@@ -35,6 +36,7 @@ class PaymentApiService(
                 status = "COMPLETED",
                 timestamp = now.toString()
             )
+            delay(3000)
             return ApiResponseDto(success = true, data = localTransaction)
         }
         return clientProvider.client.post("$BASE_URL/payments") {

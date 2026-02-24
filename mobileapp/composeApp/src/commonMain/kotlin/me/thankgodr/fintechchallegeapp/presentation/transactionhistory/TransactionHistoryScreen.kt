@@ -52,6 +52,8 @@ import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.model.TransactionStatus
 import me.thankgodr.fintechchallegeapp.presentation.utils.TestTags
 import me.thankgodr.fintechchallegeapp.presentation.utils.TransactionListShimmer
+import me.thankgodr.fintechchallegeapp.presentation.utils.toReadableDate
+import me.thankgodr.fintechchallegeapp.presentation.utils.toTitleCase
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -223,9 +225,15 @@ private fun TransactionItem(
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "${stringResource(Res.string.transaction_history_from_prefix)} ${transaction.senderName}",
+                    text = "${stringResource(Res.string.transaction_history_from_prefix)} ${transaction.senderName.toTitleCase()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = transaction.timestamp.toReadableDate(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
 
