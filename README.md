@@ -7,6 +7,7 @@ This project was built using **Compose Multiplatform** for the entirely shared U
 ---
 
 ## � App Preview
+https://github.com/user-attachments/assets/f80d55c4-a73e-49bc-a8b9-2ce325a65294
 
 ---
 
