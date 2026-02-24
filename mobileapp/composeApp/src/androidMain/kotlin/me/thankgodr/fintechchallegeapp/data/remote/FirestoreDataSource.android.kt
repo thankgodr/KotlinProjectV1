@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import me.thankgodr.fintechchallegeapp.data.models.TransactionDto
+import org.koin.core.annotation.Single
 
+@Single
 actual class FirestoreDataSource actual constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val transactionsCollection = db.collection("transactions")

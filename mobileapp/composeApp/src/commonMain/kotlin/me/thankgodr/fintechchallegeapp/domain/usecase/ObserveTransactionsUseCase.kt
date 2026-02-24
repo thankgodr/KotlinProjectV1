@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.repository.PaymentRepository
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
+@Single
 class ObserveTransactionsUseCase(
     private val repository: PaymentRepository,
     private val applicationScope: CoroutineScope

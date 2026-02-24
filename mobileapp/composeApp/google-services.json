@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "872873328368",
+    "project_id": "code-challege",
+    "storage_bucket": "code-challege.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872873328368:android:90669c8cc9e569516bcc35",
+        "android_client_info": {
+          "package_name": "me.thankgodr.fintechchallegeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzG5zGnXL5ZOMxEciePDZ3oTjlBFzAxyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

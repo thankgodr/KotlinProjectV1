@@ -6,7 +6,9 @@ import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.repository.PaymentRepository
 import me.thankgodr.fintechchallegeapp.domain.validation.PaymentValidator
 import me.thankgodr.fintechchallegeapp.domain.validation.ValidationError
+import org.koin.core.annotation.Factory
 
+@Factory
 class SendPaymentUseCase(
     private val repository: PaymentRepository
 ) {

@@ -9,7 +9,9 @@ import me.thankgodr.fintechchallegeapp.data.remote.PaymentApiService
 import me.thankgodr.fintechchallegeapp.domain.model.PaymentRequest
 import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.repository.PaymentRepository
+import org.koin.core.annotation.Single
 
+@Single
 class PaymentRepositoryImpl(
     private val apiService: PaymentApiService,
     private val firestoreDataSource: FirestoreDataSource
