@@ -11,6 +11,11 @@ sealed class SendPaymentIntent {
     data class SelectCurrency(val currency: Currency) : SendPaymentIntent()
     data object SubmitPayment : SendPaymentIntent()
     data object ResetForm : SendPaymentIntent()
+    data object NavigateToHistory: SendPaymentIntent()
+}
+
+sealed class SendPaymentEvents{
+    data object NavigateToHistory: SendPaymentEvents()
 }
 
 data class SendPaymentState(

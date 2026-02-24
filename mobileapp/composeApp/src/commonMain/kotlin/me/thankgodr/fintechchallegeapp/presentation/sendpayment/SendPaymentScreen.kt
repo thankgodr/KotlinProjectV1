@@ -37,6 +37,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +54,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.woowla.compose.icon.collections.fontawesome.FontAwesome
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.Regular
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.Solid
@@ -96,6 +101,8 @@ fun SendPaymentScreen(
     val state by viewModel.state.collectAsState()
     val focusManager = LocalFocusManager.current
     var currencyExpanded by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
 
     val successTx = state.successTransaction
     if (successTx != null) {
@@ -105,11 +112,18 @@ fun SendPaymentScreen(
             currency = successTx.currency,
             onDismiss = { viewModel.onIntent(SendPaymentIntent.ResetForm) },
             onViewHistory = {
-                viewModel.onIntent(SendPaymentIntent.ResetForm)
-                onNavigateToHistory()
+                viewModel.onIntent(SendPaymentIntent.NavigateToHistory)
             }
         )
         return
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when(event){
+                SendPaymentEvents.NavigateToHistory -> onNavigateToHistory()
+            }
+        }
     }
 
     Scaffold(
@@ -121,7 +135,7 @@ fun SendPaymentScreen(
                 },
                 actions = {
                     TextButton(
-                        onClick = onNavigateToHistory,
+                        onClick = {viewModel.onIntent(SendPaymentIntent.NavigateToHistory)},
                         modifier = Modifier.testTag(TestTags.SendPayment.HISTORY_BUTTON)
                     ) {
                         Text(stringResource(Res.string.send_payment_history))

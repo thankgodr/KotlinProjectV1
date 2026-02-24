@@ -2,9 +2,11 @@ package me.thankgodr.fintechchallegeapp.presentation.sendpayment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import me.thankgodr.fintechchallegeapp.domain.usecase.SendPaymentUseCase
 import me.thankgodr.fintechchallegeapp.domain.validation.PaymentValidator
@@ -17,6 +19,9 @@ class SendPaymentViewModel(
 
     private val _state = MutableStateFlow(SendPaymentState())
     val state: StateFlow<SendPaymentState> = _state.asStateFlow()
+
+    private val _events = Channel<SendPaymentEvents>()
+    val events = _events.receiveAsFlow()
 
 
     fun onIntent(intent: SendPaymentIntent) {
@@ -35,6 +40,12 @@ class SendPaymentViewModel(
             }
             is SendPaymentIntent.SubmitPayment -> submitPayment()
             is SendPaymentIntent.ResetForm -> reduce { SendPaymentState() }
+            SendPaymentIntent.NavigateToHistory -> {
+               viewModelScope.launch {
+                   _events.send(SendPaymentEvents.NavigateToHistory)
+                   reduce { SendPaymentState()  }
+               }
+            }
         }
     }
 
