@@ -80,6 +80,16 @@ kotlin {
             }
         }
 
+        val androidInstrumentedTest by getting {
+            dependencies {
+                implementation("androidx.test.uiautomator:uiautomator:2.3.0")
+                implementation("androidx.test.ext:junit:1.2.1")
+                implementation("androidx.test:runner:1.6.2")
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlin.testJunit)
+            }
+        }
+
         // create shared iosMain source set
         val iosMain by creating {
             dependsOn(commonMain)
@@ -132,6 +142,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     packaging {
@@ -154,4 +165,5 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    debugImplementation(libs.compose.uiTestManifest)
 }
