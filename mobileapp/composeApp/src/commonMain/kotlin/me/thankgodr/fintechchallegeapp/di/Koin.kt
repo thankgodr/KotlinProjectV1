@@ -28,7 +28,6 @@ class HttpClientProvider {
 @ComponentScan("me.thankgodr.fintechchallegeapp")
 class SharedModule
 
-// Manual module for expect/actual classes not supported by KSP annotations
 val platformModule = module {
     single { FirestoreDataSource() }
 }

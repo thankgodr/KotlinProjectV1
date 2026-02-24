@@ -18,7 +18,7 @@ private fun String.toTwoDecimalStringFromPlain(): String {
     val whole = parts[0]
     val decimals = parts.getOrNull(1) ?: ""
 
-    //WE CAN ROUND OR CEIL HERE, I AM JUST LOST THE REST HERE FOR THIS DEMO
+    // Truncate to 2 decimal places (no rounding) for display
     val resultDecimals = when {
         decimals.isEmpty() -> "00"
         decimals.length == 1 -> decimals + "0"

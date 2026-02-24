@@ -76,15 +76,15 @@ kotlin {
                 implementation(libs.koin.android)
 
                 // Firestore android dependency
-                implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
+                implementation(libs.firebase.firestore)
             }
         }
 
         val androidInstrumentedTest by getting {
             dependencies {
-                implementation("androidx.test.uiautomator:uiautomator:2.3.0")
-                implementation("androidx.test.ext:junit:1.2.1")
-                implementation("androidx.test:runner:1.6.2")
+                implementation(libs.uiautomator)
+                implementation(libs.androidx.testExt.junit)
+                implementation(libs.androidx.test.runner)
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlin.testJunit)
             }

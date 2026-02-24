@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import me.thankgodr.fintechchallegeapp.domain.usecase.ObserveTransactionsUseCase
 import org.koin.android.annotation.KoinViewModel
@@ -34,24 +33,25 @@ class TransactionHistoryViewModel(
 
     private fun observeTransactions() {
         viewModelScope.launch {
-            observeTransactionsUseCase()
-                .catch { e ->
-                    reduce {
-                        copy(
-                            isLoading = false,
-                            error = e.message ?: "Failed to load transactions"
-                        )
+            try {
+                observeTransactionsUseCase()
+                    .collect { transactions ->
+                        reduce {
+                            TransactionHistoryState(
+                                transactions = transactions,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
                     }
+            } catch (e: Exception) {
+                reduce {
+                    copy(
+                        isLoading = false,
+                        error = e.message ?: "Failed to load transactions"
+                    )
                 }
-                .collect { transactions ->
-                    reduce {
-                        TransactionHistoryState(
-                            transactions = transactions,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
-                }
+            }
         }
     }
 

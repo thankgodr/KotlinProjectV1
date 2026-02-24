@@ -22,8 +22,10 @@ kotlinx-serialization = "1.7.3"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.6.1"
 kotlinx-serialization-plugin = "2.2.20"
-firebase-bom = "33.7.0"
+firebase-bom = "24.10.3"
 google-services = "4.4.2"
+uiautomator = "2.3.0"
+androidx-test-runner = "1.6.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -63,6 +65,8 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebase-bom" }
+uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
