@@ -16,6 +16,11 @@ sealed class SendPaymentIntent {
 
 sealed class SendPaymentEvents{
     data object NavigateToHistory: SendPaymentEvents()
+    data class NavigateToSuccess(
+        val transactionId: String,
+        val amount: Double,
+        val currencyCode: String
+    ): SendPaymentEvents()
 }
 
 data class SendPaymentState(
@@ -28,7 +33,6 @@ data class SendPaymentState(
     val senderNameError: String? = null,
     val currencyError: String? = null,
     val isLoading: Boolean = false,
-    val successTransaction: Transaction? = null,
     val generalError: String? = null,
     val isFormValid: Boolean = false
 )

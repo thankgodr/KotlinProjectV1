@@ -81,7 +81,15 @@ class SendPaymentViewModel(
 
             result.fold(
                 onSuccess = { transaction ->
-                    reduce { copy(isLoading = false, successTransaction = transaction) }
+                    _events.send(
+                        SendPaymentEvents.NavigateToSuccess(
+                            transactionId = transaction.id,
+                            amount = transaction.amount,
+                            currencyCode = transaction.currency.currencyCode
+                        )
+                    )
+                    // Reset the form in the background now that we're navigating to Success
+                    reduce { SendPaymentState() }
                 },
                 onFailure = { error ->
                     reduce {
