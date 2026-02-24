@@ -60,8 +60,22 @@ import com.woowla.compose.icon.collections.fontawesome.fontawesome.regular.Circl
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.regular.User
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.ArrowRight
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.Envelope
+import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.send_payment_button_submit
+import kotlinproject.composeapp.generated.resources.send_payment_default_amount
+import kotlinproject.composeapp.generated.resources.send_payment_history
+import kotlinproject.composeapp.generated.resources.send_payment_label_amount
+import kotlinproject.composeapp.generated.resources.send_payment_label_currency
+import kotlinproject.composeapp.generated.resources.send_payment_label_recipient_email
+import kotlinproject.composeapp.generated.resources.send_payment_label_your_name
+import kotlinproject.composeapp.generated.resources.send_payment_title
+import kotlinproject.composeapp.generated.resources.success_payment_sent
+import kotlinproject.composeapp.generated.resources.success_send_another
+import kotlinproject.composeapp.generated.resources.success_transaction_id_prefix
+import kotlinproject.composeapp.generated.resources.success_view_history
 import me.thankgodr.fintechchallegeapp.domain.model.Currency
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,11 +106,11 @@ fun SendPaymentScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Send Payment", fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(Res.string.send_payment_title), fontWeight = FontWeight.SemiBold)
                 },
                 actions = {
                     TextButton(onClick = onNavigateToHistory) {
-                        Text("History")
+                        Text(stringResource(Res.string.send_payment_history))
                         Spacer(Modifier.width(4.dp))
                         Icon(
                             FontAwesome.Solid.ArrowRight,
@@ -133,7 +147,7 @@ fun SendPaymentScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "${state.selectedCurrency.currencySymbol}${state.amount.ifEmpty { "0.00" }}",
+                        text = "${state.selectedCurrency.currencySymbol}${state.amount.ifEmpty { stringResource(Res.string.send_payment_default_amount) }}",
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -151,7 +165,7 @@ fun SendPaymentScreen(
             OutlinedTextField(
                 value = state.senderName,
                 onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateSenderName(it)) },
-                label = { Text("Your Name") },
+                label = { Text(stringResource(Res.string.send_payment_label_your_name)) },
                 leadingIcon = { Icon(FontAwesome.Regular.User, contentDescription = null, modifier = Modifier.size(16.dp)) },
                 isError = state.senderNameError != null,
                 supportingText = state.senderNameError?.let { { Text(it) } },
@@ -170,7 +184,7 @@ fun SendPaymentScreen(
             OutlinedTextField(
                 value = state.recipientEmail,
                 onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateRecipientEmail(it)) },
-                label = { Text("Recipient Email") },
+                label = { Text(stringResource(Res.string.send_payment_label_recipient_email)) },
                 leadingIcon = { Icon(FontAwesome.Solid.Envelope, contentDescription = null) },
                 isError = state.emailError != null,
                 supportingText = state.emailError?.let { { Text(it) } },
@@ -193,7 +207,7 @@ fun SendPaymentScreen(
                         viewModel.onIntent(SendPaymentIntent.UpdateAmount(newValue))
                     }
                 },
-                label = { Text("Amount") },
+                label = { Text(stringResource(Res.string.send_payment_label_amount)) },
                 leadingIcon = {
                     Text(
                         state.selectedCurrency.currencySymbol,
@@ -223,7 +237,7 @@ fun SendPaymentScreen(
                 OutlinedTextField(
                     value = "${state.selectedCurrency.flagEmoji} ${state.selectedCurrency.currencyCode}",
                     onValueChange = {},
-                    label = { Text("Currency") },
+                    label = { Text(stringResource(Res.string.send_payment_label_currency)) },
                     readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -291,7 +305,7 @@ fun SendPaymentScreen(
                     )
                 } else {
                     Text(
-                        "Send Payment",
+                        stringResource(Res.string.send_payment_button_submit),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -333,7 +347,7 @@ private fun SuccessOverlay(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    "Payment Sent!",
+                    stringResource(Res.string.success_payment_sent),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -347,7 +361,7 @@ private fun SuccessOverlay(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    "ID: ${transactionId.take(8)}...",
+                    "${stringResource(Res.string.success_transaction_id_prefix)} ${transactionId.take(8)}...",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -357,11 +371,11 @@ private fun SuccessOverlay(
                     modifier = Modifier.fillMaxWidth().height(48.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("View Transaction History")
+                    Text(stringResource(Res.string.success_view_history))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 TextButton(onClick = onDismiss) {
-                    Text("Send Another")
+                    Text(stringResource(Res.string.success_send_another))
                 }
             }
         }

@@ -1,4 +1,27 @@
 <resources>
     <string name="app_name">Cashi</string>
     <string name="splash_send_money_instantly">Send money instantly</string>
+
+    <!-- Send Payment Screen -->
+    <string name="send_payment_title">Send Payment</string>
+    <string name="send_payment_history">History</string>
+    <string name="send_payment_default_amount">0.00</string>
+    <string name="send_payment_label_your_name">Your Name</string>
+    <string name="send_payment_label_recipient_email">Recipient Email</string>
+    <string name="send_payment_label_amount">Amount</string>
+    <string name="send_payment_label_currency">Currency</string>
+    <string name="send_payment_button_submit">Send Payment</string>
+
+    <!-- Success Overlay -->
+    <string name="success_payment_sent">Payment Sent!</string>
+    <string name="success_transaction_id_prefix">ID:</string>
+    <string name="success_view_history">View Transaction History</string>
+    <string name="success_send_another">Send Another</string>
+
+    <!-- Transaction History Screen -->
+    <string name="transaction_history_title">Transaction History</string>
+    <string name="transaction_history_back">Back</string>
+    <string name="transaction_history_empty_title">No transactions yet</string>
+    <string name="transaction_history_empty_subtitle">Send a payment to see it here</string>
+    <string name="transaction_history_from_prefix">From</string>
 </resources>

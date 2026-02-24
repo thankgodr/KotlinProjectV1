@@ -37,9 +37,16 @@ import androidx.compose.ui.unit.sp
 import com.woowla.compose.icon.collections.fontawesome.FontAwesome
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.Solid
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.ArrowLeft
+import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.transaction_history_back
+import kotlinproject.composeapp.generated.resources.transaction_history_empty_subtitle
+import kotlinproject.composeapp.generated.resources.transaction_history_empty_title
+import kotlinproject.composeapp.generated.resources.transaction_history_from_prefix
+import kotlinproject.composeapp.generated.resources.transaction_history_title
 import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.model.TransactionStatus
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,13 +61,13 @@ fun TransactionHistoryScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Transaction History", fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(Res.string.transaction_history_title), fontWeight = FontWeight.SemiBold)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             FontAwesome.Solid.ArrowLeft,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(Res.string.transaction_history_back),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -107,13 +114,13 @@ fun TransactionHistoryScreen(
                         Text("📭", fontSize = 48.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            "No transactions yet",
+                            stringResource(Res.string.transaction_history_empty_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            "Send a payment to see it here",
+                            stringResource(Res.string.transaction_history_empty_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -178,7 +185,7 @@ private fun TransactionItem(transaction: Transaction) {
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "From ${transaction.senderName}",
+                    text = "${stringResource(Res.string.transaction_history_from_prefix)} ${transaction.senderName}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
