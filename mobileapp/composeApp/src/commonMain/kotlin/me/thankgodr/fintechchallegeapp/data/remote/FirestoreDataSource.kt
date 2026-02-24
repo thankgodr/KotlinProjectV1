@@ -6,6 +6,6 @@ import org.koin.core.annotation.Single
 
 @Single
 expect class FirestoreDataSource() {
-    suspend fun saveTransaction(transaction: TransactionDto)
+    suspend fun saveTransaction(transaction: TransactionDto): Result<Unit>
     fun observeTransactions(): Flow<List<TransactionDto>>
 }

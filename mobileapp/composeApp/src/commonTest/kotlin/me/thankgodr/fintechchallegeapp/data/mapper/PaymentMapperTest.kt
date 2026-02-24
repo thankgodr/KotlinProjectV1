@@ -8,15 +8,15 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PaymentMapperTest {
-
     @Test
     fun paymentRequestToDto_mapsCorrectly() {
-        val request = PaymentRequest(
-            recipientEmail = "test@email.com",
-            amount = 99.99,
-            currency = Currency.USD,
-            senderName = "Alice"
-        )
+        val request =
+            PaymentRequest(
+                recipientEmail = "test@email.com",
+                amount = 99.99,
+                currency = Currency.USD,
+                senderName = "Alice",
+            )
 
         val dto = request.toDto()
 
@@ -28,15 +28,16 @@ class PaymentMapperTest {
 
     @Test
     fun transactionDtoToDomain_mapsCorrectly() {
-        val dto = TransactionDto(
-            id = "tx-123",
-            recipientEmail = "bob@test.com",
-            amount = 50.0,
-            currency = "EUR",
-            senderName = "Alice",
-            status = "COMPLETED",
-            timestamp = "2026-01-01T12:00:00Z"
-        )
+        val dto =
+            TransactionDto(
+                id = "tx-123",
+                recipientEmail = "bob@test.com",
+                amount = 50.0,
+                currency = "EUR",
+                senderName = "Alice",
+                status = "COMPLETED",
+                timestamp = "2026-01-01T12:00:00Z",
+            )
 
         val domain = dto.toDomain()
 
@@ -51,15 +52,16 @@ class PaymentMapperTest {
 
     @Test
     fun transactionDtoToDomain_unknownCurrency_defaultsToUSD() {
-        val dto = TransactionDto(
-            id = "tx-456",
-            recipientEmail = "bob@test.com",
-            amount = 25.0,
-            currency = "GBP",
-            senderName = "Charlie",
-            status = "PENDING",
-            timestamp = "2026-01-01"
-        )
+        val dto =
+            TransactionDto(
+                id = "tx-456",
+                recipientEmail = "bob@test.com",
+                amount = 25.0,
+                currency = "GBP",
+                senderName = "Charlie",
+                status = "PENDING",
+                timestamp = "2026-01-01",
+            )
 
         val domain = dto.toDomain()
 
@@ -68,15 +70,16 @@ class PaymentMapperTest {
 
     @Test
     fun transactionDtoToDomain_unknownStatus_defaultsToPending() {
-        val dto = TransactionDto(
-            id = "tx-789",
-            recipientEmail = "bob@test.com",
-            amount = 10.0,
-            currency = "USD",
-            senderName = "Dave",
-            status = "SOME_STATUS",
-            timestamp = "2026-01-01"
-        )
+        val dto =
+            TransactionDto(
+                id = "tx-789",
+                recipientEmail = "bob@test.com",
+                amount = 10.0,
+                currency = "USD",
+                senderName = "Dave",
+                status = "SOME_STATUS",
+                timestamp = "2026-01-01",
+            )
 
         val domain = dto.toDomain()
 
@@ -87,15 +90,16 @@ class PaymentMapperTest {
 
     @Test
     fun transactionToDto_mapsCorrectly() {
-        val transaction = me.thankgodr.fintechchallegeapp.domain.model.Transaction(
-            id = "tx-abc",
-            recipientEmail = "eve@test.com",
-            amount = 75.0,
-            currency = Currency.EUR,
-            senderName = "Frank",
-            status = TransactionStatus.FAILED,
-            timestamp = "2026-02-01"
-        )
+        val transaction =
+            me.thankgodr.fintechchallegeapp.domain.model.Transaction(
+                id = "tx-abc",
+                recipientEmail = "eve@test.com",
+                amount = 75.0,
+                currency = Currency.EUR,
+                senderName = "Frank",
+                status = TransactionStatus.FAILED,
+                timestamp = "2026-02-01",
+            )
 
         val dto = transaction.toDto()
 

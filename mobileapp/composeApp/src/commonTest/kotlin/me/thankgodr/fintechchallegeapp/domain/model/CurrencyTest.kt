@@ -7,7 +7,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class CurrencyTest {
-
     @Test
     fun usdHasCorrectProperties() {
         val usd = Currency.USD

@@ -5,17 +5,16 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class SendPaymentStateTest {
-
     private fun stateWith(
         email: String = "",
         amount: String = "",
         name: String = "",
-        isFormValid: Boolean = email.isNotBlank() && amount.isNotBlank() && name.isNotBlank()
+        isFormValid: Boolean = email.isNotBlank() && amount.isNotBlank() && name.isNotBlank(),
     ) = SendPaymentState(
         recipientEmail = email,
         amount = amount,
         senderName = name,
-        isFormValid = isFormValid
+        isFormValid = isFormValid,
     )
 
     @Test

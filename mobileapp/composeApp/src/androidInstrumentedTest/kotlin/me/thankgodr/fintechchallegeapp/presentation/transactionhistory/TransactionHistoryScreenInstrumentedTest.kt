@@ -13,16 +13,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertNotNull
 
-/**
- * UI Automator tests for TransactionHistoryScreen.
- * Navigates from SendPayment → History, then verifies screen elements.
- */
+private val APP_PACKAGE = "me.thankgodr.fintechchallegeapp"
+private val LAUNCH_TIMEOUT = 12_000L
 @RunWith(AndroidJUnit4::class)
 class TransactionHistoryScreenInstrumentedTest {
-
     private lateinit var device: UiDevice
-    private val APP_PACKAGE = "me.thankgodr.fintechchallegeapp"
-    private val LAUNCH_TIMEOUT = 12_000L
 
     @Before
     fun setup() {
@@ -31,8 +26,9 @@ class TransactionHistoryScreenInstrumentedTest {
         // Launch app
         device.pressHome()
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val intent = context.packageManager.getLaunchIntentForPackage(APP_PACKAGE)
-            ?: throw AssertionError("App $APP_PACKAGE not found")
+        val intent =
+            context.packageManager.getLaunchIntentForPackage(APP_PACKAGE)
+                ?: throw AssertionError("App $APP_PACKAGE not found")
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
 
@@ -77,11 +73,16 @@ class TransactionHistoryScreenInstrumentedTest {
         val list = device.findObject(By.res("transaction_history_list"))
         val emptyState = device.findObject(By.res("transaction_history_empty"))
 
-        assertTrue(list != null || emptyState != null,
-            "Either transaction list or empty state should be displayed")
+        assertTrue(
+            list != null || emptyState != null,
+            "Either transaction list or empty state should be displayed",
+        )
     }
 
-    private fun assertTrue(condition: Boolean, message: String) {
+    private fun assertTrue(
+        condition: Boolean,
+        message: String,
+    ) {
         if (!condition) throw AssertionError(message)
     }
 }

@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TransactionStatusTest {
-
     @Test
     fun fromString_completed() {
         assertEquals(TransactionStatus.COMPLETED, TransactionStatus.fromString("COMPLETED"))

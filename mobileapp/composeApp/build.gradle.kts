@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -18,10 +18,11 @@ kotlin {
         }
     }
 
-    val iosTargets = listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    )
+    val iosTargets =
+        listOf(
+            iosArm64(),
+            iosSimulatorArm64(),
+        )
 
     iosTargets.forEach { target ->
         target.binaries.framework {
@@ -47,7 +48,6 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.annotations)
 
-
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.client.logging)
@@ -57,7 +57,6 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
 
                 implementation("com.woowla.compose.icon.collections:fontawesome:7.1.0")
-
             }
         }
 
@@ -166,4 +165,11 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
     debugImplementation(libs.compose.uiTestManifest)
+}
+
+ktlint {
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
 }

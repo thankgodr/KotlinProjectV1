@@ -14,16 +14,12 @@ import org.junit.runner.RunWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-/**
- * UI Automator tests for SendPaymentScreen.
- * Launches the real app and interacts using testTag resource IDs.
- */
+private val APP_PACKAGE = "me.thankgodr.fintechchallegeapp"
+private val LAUNCH_TIMEOUT = 12_000L
 @RunWith(AndroidJUnit4::class)
 class SendPaymentScreenInstrumentedTest {
-
     private lateinit var device: UiDevice
-    private val APP_PACKAGE = "me.thankgodr.fintechchallegeapp"
-    private val LAUNCH_TIMEOUT = 12_000L
+
 
     @Before
     fun setup() {
@@ -32,8 +28,9 @@ class SendPaymentScreenInstrumentedTest {
         // Press home and launch the app
         device.pressHome()
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val intent = context.packageManager.getLaunchIntentForPackage(APP_PACKAGE)
-            ?: throw AssertionError("App $APP_PACKAGE not found")
+        val intent =
+            context.packageManager.getLaunchIntentForPackage(APP_PACKAGE)
+                ?: throw AssertionError("App $APP_PACKAGE not found")
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
 
