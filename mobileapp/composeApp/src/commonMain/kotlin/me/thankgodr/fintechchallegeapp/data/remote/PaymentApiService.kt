@@ -9,6 +9,7 @@ import me.thankgodr.fintechchallegeapp.data.models.PaymentRequestDto
 import me.thankgodr.fintechchallegeapp.data.models.TransactionDto
 import me.thankgodr.fintechchallegeapp.di.HttpClientProvider
 import org.koin.core.annotation.Single
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 
 @Single
@@ -21,10 +22,10 @@ class PaymentApiService(
         private const val USE_LOCAL_MODE = true
     }
 
-    @OptIn(ExperimentalUuidApi::class)
+    @OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
     suspend fun sendPayment(request: PaymentRequestDto): ApiResponseDto<TransactionDto> {
         if (USE_LOCAL_MODE) {
-            val now = kotlinx.datetime.Clock.System.now()
+            val now = kotlin.time.Clock.System.now()
             val localTransaction = TransactionDto(
                 id = kotlin.uuid.Uuid.random().toString(),
                 recipientEmail = request.recipientEmail,
