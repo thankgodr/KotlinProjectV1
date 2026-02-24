@@ -66,9 +66,10 @@ Because setting up a local server can be tedious for quick UI testing, the app d
 **To build and run the Android app:**
 1. Open **Android Studio**.
 2. Make sure you have the **Kotlin Multiplatform Mobile (KMM)** plugin installed.
-3. Select **File > Open**, and select the `mobileapp` directory inside this project.
-4. Let Gradle sync naturally.
-5. Select the `composeApp` run configuration at the top toolbar and hit **Run** on your emulator or physical device.
+3. **Important:** Ensure you download your `google-services.json` from Firebase and place it in the `mobileapp/composeApp/` directory. Without this file, the Android app will crash on launch!
+4. Select **File > Open**, and select the `mobileapp` directory inside this project.
+5. Let Gradle sync naturally.
+6. Select the `composeApp` run configuration at the top toolbar and hit **Run** on your emulator or physical device.
 
 ---
 
