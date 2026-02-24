@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Cashi</string>
+    <string name="splash_send_money_instantly">Send money instantly</string>
+</resources>

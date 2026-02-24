@@ -1,0 +1,369 @@
+package me.thankgodr.fintechchallegeapp.presentation.sendpayment
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.woowla.compose.icon.collections.fontawesome.FontAwesome
+import com.woowla.compose.icon.collections.fontawesome.fontawesome.Regular
+import com.woowla.compose.icon.collections.fontawesome.fontawesome.Solid
+import com.woowla.compose.icon.collections.fontawesome.fontawesome.regular.CircleCheck
+import com.woowla.compose.icon.collections.fontawesome.fontawesome.regular.User
+import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.ArrowRight
+import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.Envelope
+import me.thankgodr.fintechchallegeapp.domain.model.Currency
+import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
+import org.koin.compose.viewmodel.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SendPaymentScreen(
+    viewModel: SendPaymentViewModel = koinViewModel(),
+    onNavigateToHistory: () -> Unit
+) {
+    val state by viewModel.state.collectAsState()
+    val focusManager = LocalFocusManager.current
+    var currencyExpanded by remember { mutableStateOf(false) }
+
+    if (state.successTransaction != null) {
+        SuccessOverlay(
+            transactionId = state.successTransaction!!.id,
+            amount = state.successTransaction!!.amount,
+            currency = state.successTransaction!!.currency,
+            onDismiss = { viewModel.onIntent(SendPaymentIntent.ResetForm) },
+            onViewHistory = {
+                viewModel.onIntent(SendPaymentIntent.ResetForm)
+                onNavigateToHistory()
+            }
+        )
+        return
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Send Payment", fontWeight = FontWeight.SemiBold)
+                },
+                actions = {
+                    TextButton(onClick = onNavigateToHistory) {
+                        Text("History")
+                        Spacer(Modifier.width(4.dp))
+                        Icon(
+                            FontAwesome.Solid.ArrowRight,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "${state.selectedCurrency.currencySymbol}${state.amount.ifEmpty { "0.00" }}",
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = state.selectedCurrency.name,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = state.senderName,
+                onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateSenderName(it)) },
+                label = { Text("Your Name") },
+                leadingIcon = { Icon(FontAwesome.Regular.User, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                isError = state.senderNameError != null,
+                supportingText = state.senderNameError?.let { { Text(it) } },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            )
+
+            OutlinedTextField(
+                value = state.recipientEmail,
+                onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateRecipientEmail(it)) },
+                label = { Text("Recipient Email") },
+                leadingIcon = { Icon(FontAwesome.Solid.Envelope, contentDescription = null) },
+                isError = state.emailError != null,
+                supportingText = state.emailError?.let { { Text(it) } },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            )
+
+            OutlinedTextField(
+                value = state.amount,
+                onValueChange = { newValue ->
+                    if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
+                        viewModel.onIntent(SendPaymentIntent.UpdateAmount(newValue))
+                    }
+                },
+                label = { Text("Amount") },
+                leadingIcon = {
+                    Text(
+                        state.selectedCurrency.currencySymbol,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                },
+                isError = state.amountError != null,
+                supportingText = state.amountError?.let { { Text(it) } },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        viewModel.onIntent(SendPaymentIntent.SubmitPayment)
+                    }
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            )
+
+            Box {
+                OutlinedTextField(
+                    value = "${state.selectedCurrency.flagEmoji} ${state.selectedCurrency.currencyCode}",
+                    onValueChange = {},
+                    label = { Text("Currency") },
+                    readOnly = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(),
+                            onClick = { currencyExpanded = true }
+                        ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                DropdownMenu(
+                    expanded = currencyExpanded,
+                    onDismissRequest = { currencyExpanded = false }
+                ) {
+                    Currency.supportedCurrencies.forEach { currency ->
+                        DropdownMenuItem(
+                            text = {
+                                Text("${currency.flagEmoji} ${currency.currencyCode} - ${currency.name}")
+                            },
+                            onClick = {
+                                viewModel.onIntent(SendPaymentIntent.SelectCurrency(currency))
+                                currencyExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            if (state.generalError != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = state.generalError!!,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { viewModel.onIntent(SendPaymentIntent.SubmitPayment) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                enabled = !state.isLoading,
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        "Send Payment",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun SuccessOverlay(
+    transactionId: String,
+    amount: Double,
+    currency: Currency,
+    onDismiss: () -> Unit,
+    onViewHistory: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn() + slideInVertically { it / 2 }
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(32.dp)
+            ) {
+                Icon(
+                    FontAwesome.Regular.CircleCheck,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.size(80.dp)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    "Payment Sent!",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "${currency.currencySymbol}${amount.toTwoDecimalString()} ${currency.currencyCode}",
+                    fontSize = 22.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "ID: ${transactionId.take(8)}...",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = onViewHistory,
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("View Transaction History")
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                TextButton(onClick = onDismiss) {
+                    Text("Send Another")
+                }
+            }
+        }
+    }
+}
