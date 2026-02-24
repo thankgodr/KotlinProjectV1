@@ -6,6 +6,17 @@ This project was built using **Compose Multiplatform** for the entirely shared U
 
 ---
 
+## 🌍 Cross-Platform Power of Kotlin Multiplatform (KMP)
+
+This application leverages **Kotlin Multiplatform (KMP)** to achieve maximum code reuse without sacrificing native performance or access to platform-specific APIs. By sharing the business logic, data models, networking code, and even the UI (via **Compose Multiplatform**), we gain:
+
+- **100% Shared Business Logic**: The Domain and Data layers are written once in Kotlin and run natively on both Android and iOS. This prevents logic discrepancies between platforms.
+- **Shared UI**: Using Compose Multiplatform, the Presentation layer is also shared. The UI looks perfectly consistent while still compiling down to native iOS UI via `Compose UIViewController`.
+- **Native Performance**: Unlike hybrid frameworks (React Native, Flutter) that use a bridge or custom rendering engine, Kotlin code gets compiled directly to JVM bytecode for Android and LLVM native machine code for iOS.
+- **Platform Interoperability (`expect`/`actual`)**: When we need platform-specific implementations (e.g. Firebase Firestore), KMP provides the `expect`/`actual` mechanism. In this app, `expect class FirestoreDataSource` defines the contract in `commonMain`, while the native Google/Apple Firebase SDKs actually execute the network calls behind the scenes in `androidMain` and `iosMain`.
+
+---
+
 ## 🏗 Architecture
 
 The app is structured into a strictly separated Clean Architecture:
@@ -45,7 +56,7 @@ Because setting up a local server can be tedious for quick UI testing, the app d
    ```kotlin
    private const val USE_LOCAL_MODE = false
    ```
-4. *Important for Android Emulators:* Ensure `BASE_URL` is set to `"http://10.0.2.2:3000"`.
+4. Ensure `BASE_URL` points to the URL where the mock API server is running. *(Note: For Android Emulators running on the same machine as the server, use `"http://10.0.2.2:3000"`)*
 
 **To build and run the Android app:**
 1. Open **Android Studio**.
