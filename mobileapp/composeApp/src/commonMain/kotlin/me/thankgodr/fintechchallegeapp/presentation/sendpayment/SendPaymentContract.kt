@@ -14,7 +14,7 @@ sealed class SendPaymentIntent {
 }
 
 sealed class SendPaymentEffect {
-    data class NavigateToHistory(val transaction: Transaction) : SendPaymentEffect()
+    data class NavigateToDetail(val transaction: Transaction) : SendPaymentEffect()
 }
 
 data class SendPaymentState(
