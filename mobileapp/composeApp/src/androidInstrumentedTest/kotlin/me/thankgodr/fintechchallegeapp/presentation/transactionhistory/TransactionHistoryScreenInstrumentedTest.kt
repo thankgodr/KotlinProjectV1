@@ -15,6 +15,7 @@ import kotlin.test.assertNotNull
 
 private val APP_PACKAGE = "me.thankgodr.fintechchallegeapp"
 private val LAUNCH_TIMEOUT = 12_000L
+
 @RunWith(AndroidJUnit4::class)
 class TransactionHistoryScreenInstrumentedTest {
     private lateinit var device: UiDevice

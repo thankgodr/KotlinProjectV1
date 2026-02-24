@@ -1,35 +1,89 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Cashi FinTech App
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A modern, cross-platform Android and iOS Kotlin Multiplatform (KMP) application for sending and receiving payments.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
-
-### Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+This project was built using **Compose Multiplatform** for the entirely shared UI, **Ktor** for networking, **Koin** for dependency injection, and clean architecture principles. It currently connects to a local Mock API server.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 🏗 Architecture
+
+The app is structured into a strictly separated Clean Architecture:
+
+![Architecture Diagram](architecture.png)
+
+1. **Domain Layer (`domain/`)**: Contains pure Kotlin business logic (`Transaction`, `PaymentRequest`, `Currency`). Mappers and Use Cases (`SendPaymentUseCase`, `ObserveTransactionsUseCase`).
+2. **Data Layer (`data/`)**: Concrete implementations of the repositories. Houses the `PaymentApiService` using **Ktor Client** for HTTP networking and `FirestoreDataSource` for data persistence.
+3. **Presentation Layer (`presentation/`)**: The shared UI layer powered by **Compose Multiplatform**. Contains our MVI-style `ViewModels` and completely native-feeling UI screens (Splash, Send Payment, Transaction History) built with Material 3.
+
+---
+
+## 🚀 Getting Started
+
+### 1. The Mock API Server (Backend)
+
+The project includes a lightweight local Ktor server to simulate payment processing. 
+
+**To start the mock API:**
+1. Open a terminal at the root of the project.
+2. Run the server using the Gradle wrapper:
+   ```bash
+   ./gradlew :mock-api:run
+   ```
+3. The server will start on `http://localhost:3000`.
+
+*Note: The mock API strictly validates that emails are properly formatted, amounts are > 0, and currencies are either `USD` or `EUR`.*
+
+### 2. Running the Mobile App
+
+Because setting up a local server can be tedious for quick UI testing, the app defaults to working entirely in-memory using a dummy delay.
+
+**If you want the app to actually hit the local Mock API Server:**
+1. Open `mobileapp/composeApp/src/commonMain/kotlin/me/thankgodr/fintechchallegeapp/data/remote/PaymentApiService.kt`.
+2. Find the companion object.
+3. Change `USE_LOCAL_MODE` to `false`:
+   ```kotlin
+   private const val USE_LOCAL_MODE = false
+   ```
+4. *Important for Android Emulators:* Ensure `BASE_URL` is set to `"http://10.0.2.2:3000"`.
+
+**To build and run the Android app:**
+1. Open **Android Studio**.
+2. Make sure you have the **Kotlin Multiplatform Mobile (KMM)** plugin installed.
+3. Select **File > Open**, and select the `mobileapp` directory inside this project.
+4. Let Gradle sync naturally.
+5. Select the `composeApp` run configuration at the top toolbar and hit **Run** on your emulator or physical device.
+
+---
+
+## 🧪 Testing
+
+The project has comprehensive test coverage, ranging from unit tests to UI automation and API load tests.
+
+### 1. Unit Tests
+Located in `composeApp/src/commonTest/`. Tests ViewModel logic, Use Cases, Repository error handling, and string formatting utilities using **Kotlin Test** and **Turbine** for Flow assertions.
+```bash
+./gradlew :composeApp:testDebugUnitTest
+```
+
+### 2. Android Instrumented UI Tests (UI Automator)
+The project includes actual on-device UI tests using **UI Automator**, located in `composeApp/src/androidInstrumentedTest/`. These tests launch the app, interact with our Compose Multiplatform components via mapped `testTag` IDs, and verify end-to-end flows.
+```bash
+./gradlew :composeApp:connectedDebugAndroidTest
+```
+
+### 3. BDD Tests (Cucumber)
+Located in `composeApp/src/commonTest/`. Features defined in Gherkin syntax mapped to UI states.
+
+### 4. Appium UI Tests (Android/iOS)
+The Compose Multiplatform UI has been instrumented with `Modifier.testTag()`.
+In `App.kt`, we have enabled `testTagsAsResourceId = true`, which exposes these exact tags to **Appium** (via XCUITest on iOS and UIAutomator2 on Android) using the same selectors across both platforms.
+
+### 5. API Load Testing (JMeter)
+A JMeter Test Plan is included to load test the mock API.
+- File: `mock-api/mock_api_load_test.jmx`
+- Configuration: Simulates 5 concurrent users looping 10 times, generating randomized emails and payment amounts.
+- **To run headless:**
+  ```bash
+  jmeter -n -t mock-api/mock_api_load_test.jmx -l mock-api/results.jtl
+  ```

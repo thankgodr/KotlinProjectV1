@@ -16,10 +16,10 @@ import kotlin.test.assertTrue
 
 private val APP_PACKAGE = "me.thankgodr.fintechchallegeapp"
 private val LAUNCH_TIMEOUT = 12_000L
+
 @RunWith(AndroidJUnit4::class)
 class SendPaymentScreenInstrumentedTest {
     private lateinit var device: UiDevice
-
 
     @Before
     fun setup() {
