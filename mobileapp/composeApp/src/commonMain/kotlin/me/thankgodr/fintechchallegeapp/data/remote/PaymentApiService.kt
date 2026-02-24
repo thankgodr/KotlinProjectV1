@@ -9,6 +9,7 @@ import me.thankgodr.fintechchallegeapp.data.models.PaymentRequestDto
 import me.thankgodr.fintechchallegeapp.data.models.TransactionDto
 import me.thankgodr.fintechchallegeapp.di.HttpClientProvider
 import org.koin.core.annotation.Single
+import kotlin.uuid.ExperimentalUuidApi
 
 @Single
 class PaymentApiService(
@@ -16,7 +17,20 @@ class PaymentApiService(
 ) {
     private val baseUrl: String = "http://10.0.2.2:3000"
 
-    suspend fun sendPayment(request: PaymentRequestDto): ApiResponseDto<TransactionDto> {
+    @OptIn(ExperimentalUuidApi::class)
+    suspend fun sendPayment(request: PaymentRequestDto, useApi: Boolean = true): ApiResponseDto<TransactionDto> {
+        if (!useApi) {
+            val localTransaction = TransactionDto(
+                id = kotlin.uuid.Uuid.random().toString(),
+                recipientEmail = request.recipientEmail,
+                amount = request.amount,
+                currency = request.currency,
+                senderName = request.senderName.orEmpty(),
+                status = "COMPLETED",
+                timestamp = kotlin.random.Random.nextLong().toString()
+            )
+            return ApiResponseDto(success = true, data = localTransaction)
+        }
         return clientProvider.client.post("$baseUrl/payments") {
             contentType(ContentType.Application.Json)
             setBody(request)

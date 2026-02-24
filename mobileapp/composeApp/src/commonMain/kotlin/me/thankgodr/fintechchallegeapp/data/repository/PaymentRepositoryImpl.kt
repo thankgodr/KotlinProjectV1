@@ -1,7 +1,9 @@
 package me.thankgodr.fintechchallegeapp.data.repository
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import me.thankgodr.fintechchallegeapp.data.mapper.toDomain
 import me.thankgodr.fintechchallegeapp.data.mapper.toDto
 import me.thankgodr.fintechchallegeapp.data.remote.FirestoreDataSource
@@ -14,15 +16,22 @@ import org.koin.core.annotation.Single
 @Single
 class PaymentRepositoryImpl(
     private val apiService: PaymentApiService,
-    private val firestoreDataSource: FirestoreDataSource
+    private val firestoreDataSource: FirestoreDataSource,
+    private val applicationScope: CoroutineScope
 ) : PaymentRepository {
 
     override suspend fun sendPayment(request: PaymentRequest): Result<Transaction> {
         return try {
-            val response = apiService.sendPayment(request.toDto())
+            val response = apiService.sendPayment(request.toDto(), false)
             if (response.success && response.data != null) {
                 val transaction = response.data.toDomain()
-                firestoreDataSource.saveTransaction(response.data)
+                applicationScope.launch {
+                    try {
+                        firestoreDataSource.saveTransaction(response.data)
+                    } catch (e: Exception) {
+                        println("Firestore save failed: ${e.message}")
+                    }
+                }
                 Result.success(transaction)
             } else {
                 Result.failure(

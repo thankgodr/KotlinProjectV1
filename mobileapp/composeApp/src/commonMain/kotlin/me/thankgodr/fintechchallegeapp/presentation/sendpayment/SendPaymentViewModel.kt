@@ -71,11 +71,16 @@ class SendPaymentViewModel(
                 senderName = current.senderName.trim()
             )
 
+            println("Okh")
+
+
             result.fold(
                 onSuccess = { transaction ->
+                    println("SUCCESS CALLED")
                     reduce { copy(isLoading = false, successTransaction = transaction) }
                 },
                 onFailure = { error ->
+                    println("FAILURE CALLED: ${error.message}")
                     reduce {
                         copy(
                             isLoading = false,
