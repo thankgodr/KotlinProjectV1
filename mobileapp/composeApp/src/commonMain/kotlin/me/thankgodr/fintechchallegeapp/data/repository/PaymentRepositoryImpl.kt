@@ -22,14 +22,14 @@ class PaymentRepositoryImpl(
 
     override suspend fun sendPayment(request: PaymentRequest): Result<Transaction> {
         return try {
-            val response = apiService.sendPayment(request.toDto(), false)
+            val response = apiService.sendPayment(request.toDto())
             if (response.success && response.data != null) {
                 val transaction = response.data.toDomain()
                 applicationScope.launch {
                     try {
                         firestoreDataSource.saveTransaction(response.data)
-                    } catch (e: Exception) {
-                        println("Firestore save failed: ${e.message}")
+                    } catch (_: Exception) {
+                        // Firestore save is fire-and-forget; failure doesn't affect payment result
                     }
                 }
                 Result.success(transaction)

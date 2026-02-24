@@ -7,5 +7,5 @@ data class PaymentRequestDto(
     val recipientEmail: String,
     val amount: Double,
     val currency: String,
-    val senderName: String? = null
+    val senderName: String = ""
 )

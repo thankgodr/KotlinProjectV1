@@ -54,6 +54,7 @@ kotlin {
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.datetime)
 
                 implementation("com.woowla.compose.icon.collections:fontawesome:7.1.0")
 

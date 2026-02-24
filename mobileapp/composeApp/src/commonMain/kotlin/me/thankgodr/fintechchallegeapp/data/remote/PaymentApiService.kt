@@ -15,29 +15,34 @@ import kotlin.uuid.ExperimentalUuidApi
 class PaymentApiService(
     private val clientProvider: HttpClientProvider,
 ) {
-    private val baseUrl: String = "http://10.0.2.2:3000"
+    companion object {
+        // TODO: Inject via BuildConfig for per-environment configuration
+        private const val BASE_URL = "http://10.0.2.2:3000"
+        private const val USE_LOCAL_MODE = true
+    }
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun sendPayment(request: PaymentRequestDto, useApi: Boolean = true): ApiResponseDto<TransactionDto> {
-        if (!useApi) {
+    suspend fun sendPayment(request: PaymentRequestDto): ApiResponseDto<TransactionDto> {
+        if (USE_LOCAL_MODE) {
+            val now = kotlinx.datetime.Clock.System.now()
             val localTransaction = TransactionDto(
                 id = kotlin.uuid.Uuid.random().toString(),
                 recipientEmail = request.recipientEmail,
                 amount = request.amount,
                 currency = request.currency,
-                senderName = request.senderName.orEmpty(),
+                senderName = request.senderName,
                 status = "COMPLETED",
-                timestamp = kotlin.random.Random.nextLong().toString()
+                timestamp = now.toString()
             )
             return ApiResponseDto(success = true, data = localTransaction)
         }
-        return clientProvider.client.post("$baseUrl/payments") {
+        return clientProvider.client.post("$BASE_URL/payments") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
     }
 
     suspend fun getTransactions(): ApiResponseDto<List<TransactionDto>> {
-        return clientProvider.client.get("$baseUrl/transactions").body()
+        return clientProvider.client.get("$BASE_URL/transactions").body()
     }
 }
