@@ -28,7 +28,8 @@ data class SendPaymentState(
     val currencyError: String? = null,
     val isLoading: Boolean = false,
     val successTransaction: Transaction? = null,
-    val generalError: String? = null
+    val generalError: String? = null,
+    val isFormValid: Boolean = false
 )
 
 @Serializable

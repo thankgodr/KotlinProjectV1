@@ -88,6 +88,11 @@ class SendPaymentViewModel(
     }
 
     private fun reduce(block: SendPaymentState.() -> SendPaymentState) {
-        _state.value = _state.value.block()
+        val newState = _state.value.block()
+        _state.value = newState.copy(
+            isFormValid = newState.recipientEmail.isNotBlank() &&
+                    newState.amount.isNotBlank() &&
+                    newState.senderName.isNotBlank()
+        )
     }
 }

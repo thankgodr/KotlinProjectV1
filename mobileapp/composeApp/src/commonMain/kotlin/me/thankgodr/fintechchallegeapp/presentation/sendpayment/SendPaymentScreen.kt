@@ -239,14 +239,15 @@ fun SendPaymentScreen(
                     onValueChange = {},
                     label = { Text(stringResource(Res.string.send_payment_label_currency)) },
                     readOnly = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = ripple(),
-                            onClick = { currencyExpanded = true }
-                        ),
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
+                )
+                // Transparent overlay to capture clicks
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable { currencyExpanded = true }
                 )
                 DropdownMenu(
                     expanded = currencyExpanded,
@@ -291,7 +292,7 @@ fun SendPaymentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = !state.isLoading,
+                enabled = state.isFormValid && !state.isLoading,
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
