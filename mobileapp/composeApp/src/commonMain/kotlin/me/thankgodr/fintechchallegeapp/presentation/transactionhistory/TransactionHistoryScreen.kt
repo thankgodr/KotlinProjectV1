@@ -97,7 +97,7 @@ fun TransactionHistoryScreen(
                         Text("⚠️", fontSize = 48.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            state.error!!,
+                            state.error.orEmpty(),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error
                         )

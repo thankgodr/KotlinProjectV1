@@ -88,11 +88,12 @@ fun SendPaymentScreen(
     val focusManager = LocalFocusManager.current
     var currencyExpanded by remember { mutableStateOf(false) }
 
-    if (state.successTransaction != null) {
+    val successTx = state.successTransaction
+    if (successTx != null) {
         SuccessOverlay(
-            transactionId = state.successTransaction!!.id,
-            amount = state.successTransaction!!.amount,
-            currency = state.successTransaction!!.currency,
+            transactionId = successTx.id,
+            amount = successTx.amount,
+            currency = successTx.currency,
             onDismiss = { viewModel.onIntent(SendPaymentIntent.ResetForm) },
             onViewHistory = {
                 viewModel.onIntent(SendPaymentIntent.ResetForm)
