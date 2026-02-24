@@ -20,10 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.a11y_splash_logo
 import kotlinproject.composeapp.generated.resources.app_name
 import kotlinproject.composeapp.generated.resources.splash_send_money_instantly
 import kotlinx.coroutines.delay
@@ -37,6 +40,8 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = 1000)
     )
+
+    val splashLogoDesc = stringResource(Res.string.a11y_splash_logo)
 
     LaunchedEffect(Unit) {
         startAnimation = true
@@ -55,7 +60,10 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
         Text(
             text = "💸",
             fontSize = 64.sp,
-            modifier = Modifier.alpha(alphaAnim).testTag(TestTags.Splash.LOGO)
+            modifier = Modifier
+                .alpha(alphaAnim)
+                .testTag(TestTags.Splash.LOGO)
+                .semantics { contentDescription = splashLogoDesc }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(

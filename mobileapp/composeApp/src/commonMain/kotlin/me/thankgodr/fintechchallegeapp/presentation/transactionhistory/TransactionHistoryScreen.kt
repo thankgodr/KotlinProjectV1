@@ -31,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,8 @@ import com.woowla.compose.icon.collections.fontawesome.FontAwesome
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.Solid
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.ArrowLeft
 import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.a11y_empty_icon
+import kotlinproject.composeapp.generated.resources.a11y_error_icon
 import kotlinproject.composeapp.generated.resources.transaction_history_back
 import kotlinproject.composeapp.generated.resources.transaction_history_empty_subtitle
 import kotlinproject.composeapp.generated.resources.transaction_history_empty_title
@@ -47,6 +51,7 @@ import kotlinproject.composeapp.generated.resources.transaction_history_title
 import me.thankgodr.fintechchallegeapp.domain.model.Transaction
 import me.thankgodr.fintechchallegeapp.domain.model.TransactionStatus
 import me.thankgodr.fintechchallegeapp.presentation.utils.TestTags
+import me.thankgodr.fintechchallegeapp.presentation.utils.TransactionListShimmer
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -58,6 +63,8 @@ fun TransactionHistoryScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val errorIconDesc = stringResource(Res.string.a11y_error_icon)
+    val emptyIconDesc = stringResource(Res.string.a11y_empty_icon)
 
     Scaffold(
         modifier = Modifier.testTag(TestTags.TransactionHistory.SCREEN),
@@ -88,11 +95,9 @@ fun TransactionHistoryScreen(
             state.isLoading -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.TopCenter
                 ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.testTag(TestTags.TransactionHistory.LOADING_INDICATOR)
-                    )
+                    TransactionListShimmer()
                 }
             }
 
@@ -102,7 +107,13 @@ fun TransactionHistoryScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("⚠️", fontSize = 48.sp)
+                        Text(
+                            "⚠️",
+                            fontSize = 48.sp,
+                            modifier = Modifier.semantics {
+                                contentDescription = errorIconDesc
+                            }
+                        )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             state.error.orEmpty(),
@@ -123,7 +134,13 @@ fun TransactionHistoryScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("📭", fontSize = 48.sp)
+                        Text(
+                            "📭",
+                            fontSize = 48.sp,
+                            modifier = Modifier.semantics {
+                                contentDescription = emptyIconDesc
+                            }
+                        )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             stringResource(Res.string.transaction_history_empty_title),

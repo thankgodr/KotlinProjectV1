@@ -24,4 +24,14 @@
     <string name="transaction_history_empty_title">No transactions yet</string>
     <string name="transaction_history_empty_subtitle">Send a payment to see it here</string>
     <string name="transaction_history_from_prefix">From</string>
+
+    <!-- Accessibility -->
+    <string name="a11y_splash_logo">Money emoji logo</string>
+    <string name="a11y_navigate_to_history">Navigate to transaction history</string>
+    <string name="a11y_sender_name_icon">Sender name</string>
+    <string name="a11y_email_icon">Email</string>
+    <string name="a11y_success_checkmark">Payment successful</string>
+    <string name="a11y_loading">Loading, please wait</string>
+    <string name="a11y_error_icon">Error</string>
+    <string name="a11y_empty_icon">No transactions</string>
 </resources>

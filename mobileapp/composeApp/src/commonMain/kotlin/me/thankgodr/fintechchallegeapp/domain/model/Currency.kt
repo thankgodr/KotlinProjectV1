@@ -24,7 +24,31 @@ data class Currency(
             flagEmoji = "🇪🇺"
         )
 
-        val supportedCurrencies = listOf(USD, EUR)
+        val GBP = Currency(
+            name = "British Pound",
+            countryCode = "GB",
+            currencyCode = "GBP",
+            currencySymbol = "£",
+            flagEmoji = "🇬🇧"
+        )
+
+        val NGN = Currency(
+            name = "Nigerian Naira",
+            countryCode = "NG",
+            currencyCode = "NGN",
+            currencySymbol = "₦",
+            flagEmoji = "🇳🇬"
+        )
+
+        val GHS = Currency(
+            name = "Ghanaian Cedi",
+            countryCode = "GH",
+            currencyCode = "GHS",
+            currencySymbol = "GH₵",
+            flagEmoji = "🇬🇭"
+        )
+
+        val supportedCurrencies = listOf(USD, EUR, GBP)
 
         fun fromCode(code: String): Currency? {
             return supportedCurrencies.firstOrNull { it.currencyCode.equals(code, ignoreCase = true) }

@@ -60,6 +60,10 @@ import com.woowla.compose.icon.collections.fontawesome.fontawesome.regular.User
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.ArrowRight
 import com.woowla.compose.icon.collections.fontawesome.fontawesome.solid.Envelope
 import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.a11y_email_icon
+import kotlinproject.composeapp.generated.resources.a11y_navigate_to_history
+import kotlinproject.composeapp.generated.resources.a11y_sender_name_icon
+import kotlinproject.composeapp.generated.resources.a11y_success_checkmark
 import kotlinproject.composeapp.generated.resources.send_payment_button_submit
 import kotlinproject.composeapp.generated.resources.send_payment_default_amount
 import kotlinproject.composeapp.generated.resources.send_payment_history
@@ -73,6 +77,11 @@ import kotlinproject.composeapp.generated.resources.success_send_another
 import kotlinproject.composeapp.generated.resources.success_transaction_id_prefix
 import kotlinproject.composeapp.generated.resources.success_view_history
 import me.thankgodr.fintechchallegeapp.domain.model.Currency
+import me.thankgodr.fintechchallegeapp.domain.model.Currency.Companion.EUR
+import me.thankgodr.fintechchallegeapp.domain.model.Currency.Companion.GBP
+import me.thankgodr.fintechchallegeapp.domain.model.Currency.Companion.GHS
+import me.thankgodr.fintechchallegeapp.domain.model.Currency.Companion.NGN
+import me.thankgodr.fintechchallegeapp.domain.model.Currency.Companion.USD
 import me.thankgodr.fintechchallegeapp.presentation.utils.TestTags
 import me.thankgodr.fintechchallegeapp.presentation.utils.toTwoDecimalString
 import org.jetbrains.compose.resources.stringResource
@@ -119,7 +128,7 @@ fun SendPaymentScreen(
                         Spacer(Modifier.width(4.dp))
                         Icon(
                             FontAwesome.Solid.ArrowRight,
-                            contentDescription = null,
+                            contentDescription = stringResource(Res.string.a11y_navigate_to_history),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -173,7 +182,7 @@ fun SendPaymentScreen(
                 value = state.senderName,
                 onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateSenderName(it)) },
                 label = { Text(stringResource(Res.string.send_payment_label_your_name)) },
-                leadingIcon = { Icon(FontAwesome.Regular.User, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                leadingIcon = { Icon(FontAwesome.Regular.User, contentDescription = stringResource(Res.string.a11y_sender_name_icon), modifier = Modifier.size(16.dp)) },
                 isError = state.senderNameError != null,
                 supportingText = state.senderNameError?.let { { Text(it) } },
                 singleLine = true,
@@ -192,7 +201,7 @@ fun SendPaymentScreen(
                 value = state.recipientEmail,
                 onValueChange = { viewModel.onIntent(SendPaymentIntent.UpdateRecipientEmail(it)) },
                 label = { Text(stringResource(Res.string.send_payment_label_recipient_email)) },
-                leadingIcon = { Icon(FontAwesome.Solid.Envelope, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                leadingIcon = { Icon(FontAwesome.Solid.Envelope, contentDescription = stringResource(Res.string.a11y_email_icon), modifier = Modifier.size(16.dp)) },
                 isError = state.emailError != null,
                 supportingText = state.emailError?.let { { Text(it) } },
                 singleLine = true,
@@ -261,7 +270,7 @@ fun SendPaymentScreen(
                     onDismissRequest = { currencyExpanded = false },
                     modifier = Modifier.testTag(TestTags.SendPayment.CURRENCY_MENU)
                 ) {
-                    Currency.supportedCurrencies.forEach { currency ->
+                    listOf(NGN,GHS, USD,  EUR, GBP).forEach { currency ->
                         DropdownMenuItem(
                             text = {
                                 Text("${currency.flagEmoji} ${currency.currencyCode} - ${currency.name}")
@@ -355,7 +364,7 @@ private fun SuccessOverlay(
             ) {
                 Icon(
                     FontAwesome.Regular.CircleCheck,
-                    contentDescription = null,
+                    contentDescription = stringResource(Res.string.a11y_success_checkmark),
                     tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(80.dp).testTag(TestTags.Success.ICON)
                 )
